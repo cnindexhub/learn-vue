@@ -1,41 +1,53 @@
 <template>
-	<ul class="todo-main">
-		<MyItem 
-			v-for="todoObj in todos"
-			:key="todoObj.id" 
-			:todo="todoObj" 
-			:checkTodo="checkTodo"
-			:deleteTodo="deleteTodo"
-		/>
-	</ul>
+  <ul class="todo-main">
+    <MyItem
+      v-for="todo in todos"
+      :todo="todo"
+      :key="todo.id"
+      :checkTodo="checkTodo"
+      :removeTodo="removeTodo"
+      :updateTodo="updateTodo"
+    >
+      <template slot="saveBtn" slot-scope="{id, save}">
+        <button class="btn btn-save" @click="save(id)">保存</button>
+      </template>
+      <template slot="updateBtn" slot-scope="{id, update}">
+        <button class="btn btn-edit" @click="update($event, id)">编辑</button>
+      </template>
+      <template slot="deleteBtn" slot-scope="{id, remove}">
+        <button class="btn btn-danger" @click="remove(id)">删除</button>
+      </template>
+    </MyItem>
+  </ul>
 </template>
 
 <script>
-	import MyItem from './MyItem'
 
-	export default {
-		name:'MyList',
-		components:{MyItem},
-		//声明接收App传递过来的数据，其中todos是自己用的，checkTodo和deleteTodo是给子组件MyItem用的
-		props:['todos','checkTodo','deleteTodo']
-	}
+import MyItem from "./MyItem"
+export default {
+  name: "MyList",
+  props: ['todos', 'checkTodo', 'removeTodo', 'updateTodo'],
+  components: {
+    MyItem
+  }
+}
 </script>
 
 <style scoped>
-	/*main*/
-	.todo-main {
-		margin-left: 0px;
-		border: 1px solid #ddd;
-		border-radius: 2px;
-		padding: 0px;
-	}
+/*main*/
+.todo-main {
+  margin-left: 0px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 0px;
+}
 
-	.todo-empty {
-		height: 40px;
-		line-height: 40px;
-		border: 1px solid #ddd;
-		border-radius: 2px;
-		padding-left: 5px;
-		margin-top: 10px;
-	}
+.todo-empty {
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding-left: 5px;
+  margin-top: 10px;
+}
 </style>

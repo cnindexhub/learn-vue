@@ -2,7 +2,7 @@ module.exports = {
   pages: {
     index: {
       //入口
-      entry: 'src/main.js',
+      entry: '11_src_TodoList_自定义事件/main.js',
     },
   },
 	lintOnSave:false, //关闭语法检查

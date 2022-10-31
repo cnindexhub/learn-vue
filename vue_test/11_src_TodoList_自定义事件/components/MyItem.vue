@@ -11,19 +11,19 @@
     <input
       v-show="isUpdate"
       v-model="title"
-      @blur="updateTitle"
+      ref="title"
+      @keyup.enter="updateTitle(todo.id)"
     ></input>
     <slot name="deleteBtn" :id="todo.id" :remove="remove"></slot>
-    <slot name="updateBtn" v-show="!isUpdate" :id="todo.id" :update="update"></slot>
-    <slot name="saveBtn" v-show="isUpdate" :id="todo.id" :save="updateTitle"></slot>
-    <!--    <button class="btn btn-danger" style="display:none">删除</button>-->
+    <slot ref="updateBtn" name="updateBtn" v-show="!isUpdate" :id="todo.id" :isUpdate="isUpdate" :update="update"></slot>
+    <slot name="saveBtn" v-show="isUpdate" :id="todo.id" :isUpdate="isUpdate" :save="updateTitle"></slot>
   </li>
 </template>
 
 <script>
 export default {
   name: "MyItem",
-  props: ['todo', 'checkTodo', 'removeTodo', 'updateTodo'],
+  props: ['todo', 'checkTodo'],
   data() {
     return {
       title: this.todo.title,
@@ -36,30 +36,27 @@ export default {
     },
     // 删除todo
     remove(id) {
-      if (confirm('是否删除？')) {
-        this.removeTodo(id)
+      if (confirm(`是否删除${this.title}？`)) {
+        this.$bus.$emit('removeTodo', id)
       }
     },
     // 修改todo标题
     update(event, id) {
       this.isUpdate = !this.isUpdate
-      // 如果编辑则获取焦点
-      if (this.isUpdate) {
-
-      }
-      // 判断是否为空
-      if (!this.isUpdate && !this.title.trim()) {
-        alert('不能修改为空！')
-      }
-      // 如果点击后不是修改状态就说明是提交修改
-      if (!this.isUpdate) {
-        this.updateTodo(id, this.title)
-      }
+      // 获取焦点
+      this.$nextTick(() => {
+        this.$refs.title.focus()
+      })
     },
     // 修改id
     updateTitle(id) {
-      this.isUpdate = false
-      this.updateTodo(id, this.title)
+      // 判断是否为空
+      if (!this.title.trim()) {
+        alert('不能修改为空！')
+        return;
+      }
+      this.isUpdate = !this.isUpdate
+      this.$bus.$emit('updateTodo', id, this.title)
     }
   }
 }

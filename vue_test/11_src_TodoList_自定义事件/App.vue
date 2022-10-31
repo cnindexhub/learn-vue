@@ -6,8 +6,6 @@
         <MyList
           :todos="todos"
           :checkTodo="checkTodo"
-          :removeTodo="removeTodo"
-          :updateTodo="updateTodo"
         />
         <MyFooter
           :todos="todos"
@@ -46,6 +44,21 @@
         }
       }
     },
+    mounted() {
+      this.$bus.$on('removeTodo', this.removeTodo)
+      // 修改todo标题
+      this.$bus.$on('updateTodo', (id, title)=> {
+        this.todos.forEach(item => {
+          if (item.id === id) {
+            item.title = title
+          }
+        })
+      })
+    },
+    beforeDestroy() {
+      this.$bus.$off('removeTodo')
+      this.$bus.$off('updateTodo')
+    },
     methods: {
       addToDo(title) {
         this.todos.unshift({
@@ -69,14 +82,6 @@
       // 删除
       removeTodo(id) {
         this.todos = this.todos.filter(item => item.id !== id)
-      },
-      // 修改todo标题
-      updateTodo(id, title) {
-        this.todos.forEach(item => {
-          if (item.id === id) {
-            item.title = title
-          }
-        })
       },
       // 清除所有已完成的待办
       clearCompletedTodo() {
@@ -126,6 +131,15 @@ body {
 .btn-edit:hover {
   color: #333;
   background-color: lightblue;
+}
+.btn-save {
+  color: #fff;
+  background-color: cadetblue;
+  border: 1px solid cadetblue;
+}
+.btn-save:hover {
+  color: #333;
+  background-color: deepskyblue;
 }
 
 .btn:focus {

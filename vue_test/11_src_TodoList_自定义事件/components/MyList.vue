@@ -5,14 +5,12 @@
       :todo="todo"
       :key="todo.id"
       :checkTodo="checkTodo"
-      :removeTodo="removeTodo"
-      :updateTodo="updateTodo"
     >
-      <template slot="saveBtn" slot-scope="{id, save}">
-        <button class="btn btn-save" @click="save(id)">保存</button>
+      <template slot="saveBtn" slot-scope="{id, save, isUpdate}">
+        <button class="btn btn-save" v-show="isUpdate" @click="save(id)">保存</button>
       </template>
-      <template slot="updateBtn" slot-scope="{id, update}">
-        <button class="btn btn-edit" @click="update($event, id)">编辑</button>
+      <template slot="updateBtn" slot-scope="{id, update, isUpdate}">
+        <button class="btn btn-edit" v-show="!isUpdate" @click="update($event, id)">编辑</button>
       </template>
       <template slot="deleteBtn" slot-scope="{id, remove}">
         <button class="btn btn-danger" @click="remove(id)">删除</button>
@@ -26,7 +24,7 @@
 import MyItem from "./MyItem"
 export default {
   name: "MyList",
-  props: ['todos', 'checkTodo', 'removeTodo', 'updateTodo'],
+  props: ['todos', 'checkTodo'],
   components: {
     MyItem
   }
